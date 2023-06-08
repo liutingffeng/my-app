@@ -1,8 +1,48 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import axios, { AxiosError } from 'axios'
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+
+axios.defaults.baseURL = 'http://localhost:8081';
 
 export default function Home() {
+  const router = useRouter();
+  const [inputValue, setInputValue] = useState('');
+  const [outputValue, setOutputValue] = useState('');
+
+  const handleLoginClick = () => {
+    router.push('/login');
+  }
+
+  const handleInputChange = (event: any) => {
+    console.log(event);
+    let value = event.target.value
+    setInputValue(value);
+  }
+
+  const handleTransferClick = () => {
+    // 
+    const str = inputValue;
+    // 判断传入参数是否为字符串
+    if (typeof str !== 'string') {
+      console.error('The parameter should be a string!');
+      return null;
+    }
+
+    // 用正则表达式提取出字符串中以逗号分隔的每一项并移除多余的空格和双引号
+    const regExp = /"?\s*([^" ,]+)\s*"?,?/g;
+    const extractedStr = str.replace(regExp, '$1');
+
+    // 将提取出的每一项用分号拼接
+    const items = extractedStr.split(',');
+    const resultStr = items.join(';');
+    const output = resultStr.replace(/\n/g, ';')
+    setOutputValue(output);
+    return resultStr;
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,42 +56,21 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
+        <button onClick={handleLoginClick}>Go to Login</button>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+        <textarea placeholder="Enter your input here"
+          className={styles.input}
+          value={inputValue}
+          onChange={handleInputChange}
+        />
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+        <button onClick={handleTransferClick}>转换</button>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <textarea placeholder="output"
+          className={styles.input}
+          value={outputValue}
+          onChange={() => {}}
+        />
       </main>
 
       <footer className={styles.footer}>
