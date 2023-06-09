@@ -11,6 +11,12 @@ export default function Home() {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [outputValue, setOutputValue] = useState('');
+  // 灰度仓1
+  const [grayWarehouse1, setGrayWarehouse1] = useState('');
+  // 灰度仓2
+  const [grayWarehouse2, setGrayWarehouse2] = useState('');
+  // 重合仓
+  const [repeatWarehouse, setRepeatWarehouse] = useState('');
 
   const handleLoginClick = () => {
     router.push('/login');
@@ -20,6 +26,16 @@ export default function Home() {
     console.log(event);
     let value = event.target.value
     setInputValue(value);
+  }
+
+  const handleGrayChange1 = (event: any) => {
+    let value = event.target.value
+    setGrayWarehouse1(value);
+  }
+
+  const handleGrayChange2 = (event: any) => {
+    let value = event.target.value
+    setGrayWarehouse2(value);
   }
 
   const handleTransferClick = () => {
@@ -43,6 +59,19 @@ export default function Home() {
     return resultStr;
   }
 
+  const verifyCoincidentWarehouse = () => {
+    // 通过;分隔
+    const str1 = grayWarehouse1;
+    const str2 = grayWarehouse2;
+    const str1arr = str1.split(';');
+    const str2arr = str2.split(';');
+    const result = str1arr.filter(item => str2arr.includes(item));
+    const resultStr = result.join(';');
+    console.log(resultStr);
+    setRepeatWarehouse(resultStr);
+    return resultStr;
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -58,19 +87,53 @@ export default function Home() {
 
         <button onClick={handleLoginClick}>Go to Login</button>
 
-        <textarea placeholder="Enter your input here"
-          className={styles.input}
-          value={inputValue}
-          onChange={handleInputChange}
-        />
+        {/* 将panda 上复制的 poi-id 转换为 Diva 的格式 */}
 
-        <button onClick={handleTransferClick}>转换</button>
+        <text style={{marginTop: 30}}>将panda 上复制的 poi-id 转换为 Diva 的格式</text>
+        <div className={styles.transferCtn}>
 
-        <textarea placeholder="output"
-          className={styles.input}
-          value={outputValue}
-          onChange={() => {}}
-        />
+          <textarea placeholder="Enter your input here"
+            className={styles.input}
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+
+          <button style={{ alignSelf: "center" }} onClick={handleTransferClick}>转换</button>
+
+          <textarea placeholder="output"
+            className={styles.input}
+            value={outputValue}
+            onChange={() => { }}
+          />
+        </div>
+
+        <text style={{marginTop: 30}}>查询两个灰度范围中重合的poi-id</text>
+
+        <div className={styles.transferCtn2}>
+          <div className={styles.transferCtn}>
+
+            <textarea placeholder="灰度范围1"
+              className={styles.input}
+              value={grayWarehouse1}
+              onChange={handleGrayChange1}
+            />
+
+            <textarea placeholder="灰度范围2"
+              className={styles.input}
+              value={grayWarehouse2}
+              onChange={handleGrayChange2}
+            />
+          </div>
+
+          <button style={{ alignSelf: "center" }} onClick={verifyCoincidentWarehouse}>查询重合仓</button>
+
+          <textarea placeholder="重合仓"
+              className={styles.input}
+              value={repeatWarehouse}
+              onChange={() => {}}
+            />
+        </div>
+
       </main>
 
       <footer className={styles.footer}>

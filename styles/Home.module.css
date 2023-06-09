@@ -219,3 +219,18 @@
   font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", Arial, SimSun, sans-serif;
 }
 
+.transferCtn {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 60%;
+}
+
+.transferCtn2 {
+  /* background-color: #c0005a; */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 60%;
+}
+
